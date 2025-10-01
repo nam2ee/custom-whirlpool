@@ -1,0 +1,12 @@
+[package]
+name = "orca-test"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rwlock_whirlpools = { package = "orca_whirlpools" , path = "./rust-sdk/whirlpool"}
+orca_whirlpools = "5.0.0"
+tokio = "1.47.1"
+solana-rpc-client = "2.3.11"
+solana-sdk = "3.0.0"
+solana-pubkey = "2.4.0"
