@@ -22,10 +22,10 @@ error[E0277]: `std::sync::MutexGuard<'_, Pubkey>` cannot be sent between threads
 1. Edit `src/main.rs`:
    ```rust
    // Comment out line 3
-   // use rwlock_whirlpools::{...};
+   // use fixed_orca_whirlpools::{...};
    
    // Uncomment line 4
-   use orca_whirlpools::{...};
+   use original_orca_whirlpools::{...};
    ```
 
 2. Run:
@@ -35,15 +35,15 @@ error[E0277]: `std::sync::MutexGuard<'_, Pubkey>` cannot be sent between threads
 
 3. You'll see the `Send` trait error.
 
-### Testing the Working Version (RwLock Fix)
+### Testing the Working Version (Reference overalive Fixed)
 
 1. Edit `src/main.rs`:
    ```rust
    // Use line 3 (default)
-   use rwlock_whirlpools::{...};
+   use fixed_orca_whirlpools::{...};
    
    // Comment line 4
-   // use orca_whirlpools::{...};
+   // use original_orca_whirlpools::{...};
    ```
 
 2. Run:
@@ -55,24 +55,20 @@ error[E0277]: `std::sync::MutexGuard<'_, Pubkey>` cannot be sent between threads
 
 ## The Fix
 
-In `rust-sdk/whirlpool/src/config.rs`, change:
+In `rust-sdk/whirlpool/src/`, change:
 
-```rust
-// Before (Mutex)
-pub static WHIRLPOOLS_CONFIG_ADDRESS: Mutex<Pubkey> = Mutex::new(...);
+![alt text](image.png)
 
-// After (RwLock)
-pub static WHIRLPOOLS_CONFIG_ADDRESS: RwLock<Pubkey> = RwLock::new(...);
-```
 
-And update all `.try_lock()` calls to `.try_read()` or `.try_write()` accordingly.
 
-## Why RwLock?
+## What was the issue?
 
-- `RwLock` allows multiple concurrent readers (config reads are far more common than writes)
-- Better performance for read-heavy workloads
-- Still prevents the `Send` issue when values are properly copied from the guard
+Mutexguard for `WHIRLPOOLS_CONFIG_ADDRESS` is alive over after the .await contexts. It doesn't implements `Send` so that violates thread safety. 
 
 ## Related Issue
 
 See the discussion in the Orca Discord for more context.
+
+## NEXT STEP
+Basically, I notice operations for `WHIRLPOOLS_CONFIG_ADDRESS` are read-intensive overall.
+So, I think changing `Mutex` type to `RwLock` will be helpful for tackling performance issue. Let me measure the performance metric!
