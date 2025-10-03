@@ -1,7 +1,7 @@
 // for see the current problem, erase line 3 and uncomment line 4 then execute!
 
-use rwlock_whirlpools::{fetch_positions_in_whirlpool, fetch_whirlpools_by_token_pair, set_whirlpools_config_address, PoolInfo, WhirlpoolsConfigInput};
-//use orca_whirlpools::{fetch_positions_in_whirlpool , fetch_whirlpools_by_token_pair, set_whirlpools_config_address, PoolInfo, WhirlpoolsConfigInput};
+use fixed_orca_whirlpools::{fetch_positions_in_whirlpool , fetch_whirlpools_by_token_pair, set_whirlpools_config_address, PoolInfo, WhirlpoolsConfigInput};
+//use original_whirlpools::{fetch_positions_in_whirlpool, fetch_whirlpools_by_token_pair, set_whirlpools_config_address, PoolInfo, WhirlpoolsConfigInput};
 use solana_rpc_client::nonblocking::rpc_client::RpcClient;
 use solana_pubkey::Pubkey;
 use std::str::FromStr;
@@ -22,7 +22,6 @@ async fn main() {
     let token_b = Pubkey::from_str("BRjpCHtyQLNCo8gqRUr8jtdAj5AjPYQaoqbvcZiHok1k").unwrap(); 
 
     let handle = tokio::spawn(async move  {
-
 
         let pool_infos = fetch_whirlpools_by_token_pair(&rpc , token_a, token_b).await.unwrap();
         for pool_info in pool_infos {

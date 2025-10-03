@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rwlock_whirlpools = { package = "orca_whirlpools" , path = "./rust-sdk/whirlpool"}
-orca_whirlpools = "5.0.0"
+original_whirlpools = { package = "orca_whirlpools" , version = "5.0.0"}
+fixed_orca_whirlpools = { package = "orca_whirlpools", git = "https://github.com/nam2ee/whirlpools-async", branch = "feature/async" }
 tokio = "1.47.1"
 solana-rpc-client = "2.3.11"
 solana-sdk = "3.0.0"
